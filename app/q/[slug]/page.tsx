@@ -74,13 +74,19 @@ export default function PlayPage() {
   };
 
   if (phase === "loading") {
-    return <Center><p className="text-ink-3">loading…</p></Center>;
+    return (
+      <Center>
+        <p className="text-ink-3">loading…</p>
+      </Center>
+    );
   }
   if (phase === "missing") {
     return (
       <Center>
-        <h1 className="display text-3xl">Quiz not found</h1>
-        <p className="mt-3 text-ink-3">That link doesn&apos;t go anywhere. Double-check it?</p>
+        <h1 className="display text-[28px]">Quiz not found</h1>
+        <p className="mt-3 text-[14px] text-ink-3">
+          That link doesn&apos;t go anywhere. Double-check it?
+        </p>
       </Center>
     );
   }
@@ -88,8 +94,10 @@ export default function PlayPage() {
     return (
       <Center>
         <span className="eyebrow-chip">not unlocked yet</span>
-        <h1 className="display mt-5 text-3xl">This quiz is still cooking</h1>
-        <p className="mt-3 max-w-sm text-ink-3">
+        <h1 className="display mt-6 text-[28px]">
+          This quiz is still <span className="romantic text-rose">cooking</span>
+        </h1>
+        <p className="mt-3 max-w-sm text-[14px] text-ink-3">
           The person who made it hasn&apos;t unlocked the link yet. Nudge them.
         </p>
       </Center>
@@ -102,21 +110,26 @@ export default function PlayPage() {
   if (phase === "intro") {
     return (
       <Center>
-        <span className="eyebrow-chip">you&apos;ve been challenged</span>
-        <h1 className="display mt-5 max-w-lg text-3xl" dir={rtl ? "rtl" : "ltr"}>
+        <div className="rise d1">
+          <span className="eyebrow-chip">you&apos;ve been challenged</span>
+        </div>
+        <h1
+          className="display rise d2 mt-6 max-w-md text-[30px]"
+          dir={rtl ? "rtl" : "ltr"}
+        >
           {quiz.title}
         </h1>
-        <p className="mt-3 text-ink-3">
+        <p className="rise d3 mt-3 text-[14px] text-ink-3">
           {quiz.questions.length} questions about a chat with{" "}
           {quiz.stats.totalMessages.toLocaleString()} messages. No pressure.
         </p>
         {quiz.finishedPlayers.length > 0 && (
-          <p className="mt-2 text-sm text-ink-4">
+          <p className="rise d3 mt-2 text-[13px] text-ink-4">
             already played: {quiz.finishedPlayers.map((p) => p.name).join(", ")}
           </p>
         )}
         <form
-          className="mt-8 flex w-full max-w-sm flex-col gap-3"
+          className="rise d4 mt-8 flex w-full max-w-sm flex-col gap-3"
           onSubmit={(e) => {
             e.preventDefault();
             if (name.trim()) setPhase("playing");
@@ -127,7 +140,7 @@ export default function PlayPage() {
             onChange={(e) => setName(e.target.value)}
             placeholder="your name"
             maxLength={40}
-            className="rounded-full border border-line-strong bg-surface-2 px-5 py-3 text-center outline-none placeholder:text-ink-4 focus:border-pink"
+            className="field text-center"
           />
           <button type="submit" className="btn-primary" disabled={!name.trim()}>
             start <span aria-hidden>→</span>
@@ -139,36 +152,34 @@ export default function PlayPage() {
 
   const q = quiz.questions[current];
   return (
-    <div className="mx-auto w-full max-w-xl px-5 py-12">
+    <div className="mx-auto w-full max-w-md px-5 py-10">
       <div className="flex items-center justify-between">
         <span className="eyebrow">
           question {current + 1} of {quiz.questions.length}
         </span>
-        <span className="text-sm text-ink-4">{name}</span>
+        <span className="text-[13px] text-ink-4">{name}</span>
       </div>
       {/* progress */}
-      <div className="mt-3 h-1 overflow-hidden rounded-full bg-surface-2">
+      <div className="progress-track mt-3">
         <div
-          className="h-full rounded-full bg-pink transition-all duration-300"
-          style={{ width: `${((current + (picked !== null ? 1 : 0)) / quiz.questions.length) * 100}%` }}
+          className="progress-fill"
+          style={{
+            width: `${((current + (picked !== null ? 1 : 0)) / quiz.questions.length) * 100}%`,
+          }}
         />
       </div>
 
-      <h1 className="display mt-8 text-2xl sm:text-[27px]" dir={rtl ? "rtl" : "ltr"}>
+      <h1 className="display mt-9 text-[25px]" dir={rtl ? "rtl" : "ltr"}>
         {q.question}
       </h1>
 
-      <div className="mt-6 flex flex-col gap-2.5" dir={rtl ? "rtl" : "ltr"}>
+      <div className="mt-7 flex flex-col gap-2.5" dir={rtl ? "rtl" : "ltr"}>
         {q.options.map((o, i) => (
           <button
             key={`${current}-${i}`}
             onClick={() => choose(i)}
             disabled={picked !== null || phase === "submitting"}
-            className={`rounded-[14px] border px-4 py-3.5 text-start text-[15px] transition-colors ${
-              picked === i
-                ? "border-pink-border bg-pink-dim text-pink"
-                : "border-line bg-surface text-ink-2 hover:border-line-strong"
-            }`}
+            className={`answer-option ${picked === i ? "selected" : ""}`}
           >
             {o}
           </button>
@@ -176,16 +187,16 @@ export default function PlayPage() {
       </div>
 
       {phase === "submitting" && (
-        <p className="mt-6 text-center text-sm text-ink-3">counting your points…</p>
+        <p className="mt-6 text-center text-[14px] text-ink-3">counting your points…</p>
       )}
-      {error && <p className="mt-4 text-sm text-pink">{error}</p>}
+      {error && <p className="mt-4 text-[14px] font-medium text-rose">{error}</p>}
     </div>
   );
 }
 
 function Center({ children }: { children: React.ReactNode }) {
   return (
-    <div className="mx-auto flex w-full max-w-2xl flex-col items-center px-5 py-24 text-center">
+    <div className="mx-auto flex w-full max-w-md flex-col items-center px-5 py-24 text-center">
       {children}
     </div>
   );

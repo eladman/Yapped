@@ -17,11 +17,11 @@ interface PreviewData {
   previewQuestions: { question: string; options: string[] }[];
 }
 
-const RELATIONSHIPS: { key: Relationship; label: string; hint: string }[] = [
-  { key: "partner", label: "Romantic partner", hint: "warm-teasing, a little nostalgic" },
-  { key: "friend", label: "Friend", hint: "maximum roast" },
-  { key: "family", label: "Family", hint: "light and warm" },
-  { key: "group", label: "Friend group", hint: "inside-joke energy, leaderboard chaos" },
+const RELATIONSHIPS: { key: Relationship; emoji: string; label: string; hint: string }[] = [
+  { key: "partner", emoji: "💗", label: "Romantic partner", hint: "warm-teasing, a little nostalgic" },
+  { key: "friend", emoji: "😏", label: "Friend", hint: "maximum roast" },
+  { key: "family", emoji: "🏡", label: "Family", hint: "light and warm" },
+  { key: "group", emoji: "🎉", label: "Friend group", hint: "inside-joke energy, leaderboard chaos" },
 ];
 
 export default function CreatePage() {
@@ -117,14 +117,17 @@ export default function CreatePage() {
   }, [signals]);
 
   return (
-    <div className="mx-auto w-full max-w-2xl px-5 py-12">
+    <div className="mx-auto w-full max-w-md px-5 py-10">
       {step === "upload" && (
         <section>
-          <span className="eyebrow">step 1 · upload</span>
-          <h1 className="display mt-2 text-3xl">Drop your chat export here</h1>
-          <p className="mt-3 text-ink-3">
+          <span className="eyebrow rise d1">step 1 · upload</span>
+          <h1 className="display rise d2 mt-2 text-[30px]">
+            Drop your chat <span className="romantic text-rose">export</span> here
+          </h1>
+          <p className="rise d3 mt-3 text-[14px] text-ink-3">
             In WhatsApp: open the chat → ⋮ (or the contact name) → More → Export chat →{" "}
-            <strong className="text-ink-2">without media</strong>. Then upload the .txt or .zip.
+            <strong className="font-semibold text-ink-2">without media</strong>. Then upload
+            the .txt or .zip.
           </p>
 
           <div
@@ -143,15 +146,15 @@ export default function CreatePage() {
               const f = e.dataTransfer.files?.[0];
               if (f) handleFile(f);
             }}
-            className={`card mt-8 flex cursor-pointer flex-col items-center gap-3 px-6 py-14 text-center transition-colors ${
-              dragOver ? "border-pink" : "hover:border-line-strong"
+            className={`rise d4 mt-8 flex cursor-pointer flex-col items-center gap-4 rounded-card border-2 border-dashed px-6 py-14 text-center shadow-[var(--yap-shadow-soft)] transition-colors ${
+              dragOver ? "border-pink bg-pink-soft" : "border-pink-border bg-white/75"
             }`}
           >
-            <span className="text-3xl" aria-hidden>
-              📥
+            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-pink-soft text-rose">
+              <ArrowDownIcon />
             </span>
-            <p className="font-medium">Drag the export here, or tap to choose a file</p>
-            <p className="text-sm text-ink-4">.txt or .zip · exported without media</p>
+            <p className="text-[15px] font-semibold">Tap to choose your export</p>
+            <p className="-mt-2 text-[13px] text-ink-4">.txt or .zip · exported without media</p>
             <input
               ref={fileInput}
               type="file"
@@ -164,8 +167,10 @@ export default function CreatePage() {
             />
           </div>
 
-          <p className="mt-4 flex items-center gap-2 text-[13px] text-ink-3">
-            <span className="text-pink">🔒</span>
+          <p className="rise d5 mt-5 flex items-start gap-2 text-[13px] text-ink-3">
+            <span className="mt-0.5 text-rose">
+              <LockIcon />
+            </span>
             Your chat is analyzed in your browser. The raw messages never leave your device —
             not to us, not to anyone.
           </p>
@@ -175,38 +180,60 @@ export default function CreatePage() {
 
       {step === "confirm" && signals && parsed && (
         <section>
-          <span className="eyebrow">step 2 · who&apos;s this for?</span>
-          <h1 className="display mt-2 text-3xl">Found it. This chat has history.</h1>
+          <span className="eyebrow rise d1">step 2 · who&apos;s this for?</span>
+          <h1 className="display rise d2 mt-2 text-[30px]">
+            Found it. This chat has <span className="romantic text-rose">history</span>.
+          </h1>
 
-          <div className="card mt-6 grid grid-cols-2 gap-4 p-5 sm:grid-cols-4">
+          <div className="card-glass rise d3 mt-6 grid grid-cols-2 gap-x-4 gap-y-5 p-6">
             <Stat label="messages" value={signals.totalMessages.toLocaleString()} />
             <Stat label="people" value={String(signals.participants.length)} />
             <Stat label="time span" value={yearsSpan} />
             <Stat label="active days" value={signals.activeDays.toLocaleString()} />
           </div>
-          <p className="mt-3 text-sm text-ink-3">
+          <p className="rise d3 mt-3 text-[13px] text-ink-3">
             Between {signals.participants.map((p) => p.name).join(", ")}
           </p>
 
-          <h2 className="mt-8 font-medium">Pick the vibe</h2>
-          <div className="mt-3 grid gap-2.5 sm:grid-cols-2">
-            {RELATIONSHIPS.map((r) => (
-              <button
-                key={r.key}
-                onClick={() => setRelationship(r.key)}
-                className={`rounded-[14px] border px-4 py-3.5 text-left transition-colors ${
-                  relationship === r.key
-                    ? "border-pink-border bg-pink-dim"
-                    : "border-line bg-surface hover:border-line-strong"
-                }`}
-              >
-                <span className={relationship === r.key ? "text-pink" : ""}>{r.label}</span>
-                <span className="mt-0.5 block text-[13px] text-ink-4">{r.hint}</span>
-              </button>
-            ))}
+          <h2 className="rise d4 mt-8 text-[15px] font-semibold">Pick the vibe</h2>
+          <div className="rise d4 mt-3 flex flex-col gap-2.5">
+            {RELATIONSHIPS.map((r) => {
+              const active = relationship === r.key;
+              return (
+                <button
+                  key={r.key}
+                  onClick={() => setRelationship(r.key)}
+                  className={`answer-option ${active ? "selected" : ""}`}
+                >
+                  <span className="flex items-center gap-3.5">
+                    <span className="text-[20px]" aria-hidden>
+                      {r.emoji}
+                    </span>
+                    <span className="flex-1">
+                      <span className={`block text-[15px] ${active ? "" : "text-ink"}`}>
+                        {r.label}
+                      </span>
+                      <span className="mt-0.5 block text-[12.5px] font-normal text-ink-4">
+                        {r.hint}
+                      </span>
+                    </span>
+                    <span
+                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[12px] transition-colors ${
+                        active
+                          ? "border-pink bg-pink text-white"
+                          : "border-line-strong bg-white text-transparent"
+                      }`}
+                      aria-hidden
+                    >
+                      ✓
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
-          <div className="mt-8 flex items-center gap-4">
+          <div className="rise d5 mt-8 flex flex-col gap-3">
             <button className="btn-primary" disabled={!relationship || busy} onClick={generate}>
               generate my quiz <span aria-hidden>→</span>
             </button>
@@ -214,7 +241,7 @@ export default function CreatePage() {
               different chat
             </button>
           </div>
-          <p className="mt-4 text-[13px] text-ink-4">
+          <p className="mt-4 text-center text-[12.5px] text-ink-4">
             Only stats and a few short quotes are sent to write the questions — never the full
             chat. Nothing is kept after generation.
           </p>
@@ -223,10 +250,13 @@ export default function CreatePage() {
       )}
 
       {step === "generating" && (
-        <section className="flex flex-col items-center py-24 text-center">
-          <span className="eyebrow-chip animate-pulse">reading the receipts</span>
-          <h1 className="display mt-6 text-3xl">Writing your quiz…</h1>
-          <p className="mt-3 max-w-sm text-ink-3">
+        <section className="relative flex flex-col items-center py-24 text-center">
+          <div className="aura absolute top-10 h-52 w-52" aria-hidden />
+          <span className="eyebrow-chip relative animate-pulse">reading the receipts</span>
+          <h1 className="display relative mt-8 text-[30px]">
+            Writing your <span className="romantic text-rose">quiz</span>…
+          </h1>
+          <p className="relative mt-3 max-w-sm text-[14px] text-ink-3">
             Digging through {signals?.totalMessages.toLocaleString()} messages of history. This
             takes a moment.
           </p>
@@ -235,29 +265,29 @@ export default function CreatePage() {
 
       {step === "preview" && preview && (
         <section>
-          <span className="eyebrow">step 3 · the tease</span>
-          <h1 className="display mt-2 text-3xl">{preview.title}</h1>
-          <p className="mt-3 text-ink-3">
+          <span className="eyebrow rise d1">step 3 · the tease</span>
+          <h1 className="display rise d2 mt-2 text-[28px]">{preview.title}</h1>
+          <p className="rise d3 mt-3 text-[14px] text-ink-3">
             {preview.totalQuestions} questions, built from your actual chat. Here&apos;s a
             taste:
           </p>
           {preview.usedFallback && (
-            <p className="mt-2 text-[13px] text-ink-4">
+            <p className="rise d3 mt-2 text-[12.5px] text-ink-4">
               (Generated in stats-only mode — set ANTHROPIC_API_KEY for the full AI-written
               version.)
             </p>
           )}
 
-          <div className="mt-6 flex flex-col gap-3">
+          <div className="rise d4 mt-6 flex flex-col gap-3">
             {preview.previewQuestions.map((q, i) => (
               <div key={i} className="card p-5">
                 <span className="eyebrow">question {i + 1}</span>
-                <p className="display mt-2 text-xl">{q.question}</p>
-                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <p className="display mt-2 text-[19px]">{q.question}</p>
+                <div className="mt-3 flex flex-col gap-2">
                   {q.options.map((o) => (
                     <div
                       key={o}
-                      className="rounded-[14px] border border-line bg-surface-2 px-3.5 py-2.5 text-sm text-ink-2"
+                      className="rounded-chip border border-line bg-bg px-3.5 py-2.5 text-[14px] text-ink-2"
                     >
                       {o}
                     </div>
@@ -266,16 +296,16 @@ export default function CreatePage() {
               </div>
             ))}
             {/* locked remainder */}
-            <div className="card-elevated relative overflow-hidden p-5">
+            <div className="card relative overflow-hidden p-5">
               <div className="pointer-events-none select-none blur-[6px]">
                 {[...Array(2)].map((_, i) => (
                   <div key={i} className="mb-4">
-                    <p className="display text-xl">Who said &quot;██████ ███ █████&quot;?</p>
-                    <div className="mt-2 grid gap-2 sm:grid-cols-2">
-                      {["██████", "████", "███████", "█████"].map((o, j) => (
+                    <p className="display text-[19px]">Who said &quot;██████ ███ █████&quot;?</p>
+                    <div className="mt-2 flex flex-col gap-2">
+                      {["██████", "████"].map((o, j) => (
                         <div
                           key={j}
-                          className="rounded-[14px] border border-line px-3.5 py-2.5 text-sm text-ink-4"
+                          className="rounded-chip border border-line px-3.5 py-2.5 text-[14px] text-ink-4"
                         >
                           {o}
                         </div>
@@ -284,16 +314,19 @@ export default function CreatePage() {
                   </div>
                 ))}
               </div>
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-black/40">
-                <p className="font-medium">
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-white/55 px-6 text-center backdrop-blur-[7px]">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-pink-soft text-rose">
+                  <LockIcon size={16} />
+                </span>
+                <p className="text-[15px] font-semibold">
                   {preview.totalQuestions - preview.previewQuestions.length} more questions
                   behind the link
                 </p>
                 <button className="btn-primary" onClick={unlock} disabled={busy}>
-                  unlock &amp; get share link · ₪{(preview.priceAgorot / 100).toFixed(0)}{" "}
+                  unlock &amp; get the link · ₪{(preview.priceAgorot / 100).toFixed(0)}{" "}
                   <span aria-hidden>→</span>
                 </button>
-                <p className="text-[12px] text-ink-3">
+                <p className="text-[12.5px] text-ink-3">
                   one-time. everyone you send it to plays free
                 </p>
               </div>
@@ -305,24 +338,31 @@ export default function CreatePage() {
 
       {step === "share" && preview && shareSlug && (
         <section className="text-center">
-          <span className="eyebrow-chip">it&apos;s live</span>
-          <h1 className="display mt-6 text-3xl">Send this link. Watch them sweat.</h1>
+          <div className="rise d1 flex justify-center">
+            <span className="eyebrow-chip">it&apos;s live</span>
+          </div>
+          <h1 className="display rise d2 mt-6 text-[30px]">
+            Send the link.{" "}
+            <span className="romantic text-rose">Let the leaderboard talk.</span>
+          </h1>
 
-          <ShareLink url={`${origin}/q/${shareSlug}`} />
+          <div className="rise d3">
+            <ShareLink url={`${origin}/q/${shareSlug}`} />
+          </div>
 
-          <p className="mt-6 text-sm text-ink-3">
-            Everyone plays free, then the leaderboard does the talking.
+          <p className="rise d4 mt-6 text-[13.5px] text-ink-3">
+            Everyone plays free — scores roll in as they finish.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-            <a href={`/q/${shareSlug}`} className="btn-primary">
+          <div className="rise d5 mt-8 flex flex-col items-center gap-3">
+            <a href={`/q/${shareSlug}`} className="btn-primary w-full max-w-[280px]">
               play it yourself <span aria-hidden>→</span>
             </a>
-            <a href={`/a/${preview.adminToken}`} className="btn-secondary">
+            <a href={`/a/${preview.adminToken}`} className="btn-secondary w-full max-w-[280px]">
               creator dashboard
             </a>
           </div>
-          <p className="mt-6 text-[13px] text-ink-4">
+          <p className="mt-6 text-[12.5px] text-ink-4">
             Bookmark the dashboard link — it&apos;s your private key to watch scores roll in.
           </p>
         </section>
@@ -334,23 +374,23 @@ export default function CreatePage() {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
-      <div className="display text-2xl">{value}</div>
-      <div className="mt-0.5 text-[11px] uppercase tracking-[0.13em] text-ink-4">{label}</div>
+      <div className="display text-[24px]">{value}</div>
+      <div className="mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-4">{label}</div>
     </div>
   );
 }
 
 function ErrorLine({ text }: { text: string }) {
-  return <p className="mt-4 text-sm text-pink">{text}</p>;
+  return <p className="mt-4 text-[14px] font-medium text-rose">{text}</p>;
 }
 
 function ShareLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="card-elevated mx-auto mt-8 flex max-w-md items-center justify-between gap-3 p-3 pl-5">
-      <span className="truncate text-sm text-ink-2">{url}</span>
+    <div className="card-glass mx-auto mt-8 flex max-w-md items-center justify-between gap-3 rounded-full p-2 pl-5">
+      <span className="truncate text-[14px] text-ink-2">{url}</span>
       <button
-        className="btn-primary shrink-0 !px-5 !py-2.5 text-sm"
+        className="btn-primary shrink-0 !px-5 !py-2.5 !text-[14px]"
         onClick={async () => {
           await navigator.clipboard.writeText(url);
           setCopied(true);
@@ -360,5 +400,28 @@ function ShareLink({ url }: { url: string }) {
         {copied ? "copied ✓" : "copy link"}
       </button>
     </div>
+  );
+}
+
+function LockIcon({ size = 14 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden>
+      <rect x="4" y="10" width="16" height="11" rx="3" stroke="currentColor" strokeWidth="2" />
+      <path d="M8 10V7a4 4 0 1 1 8 0v3" stroke="currentColor" strokeWidth="2" />
+    </svg>
+  );
+}
+
+function ArrowDownIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M12 4v13m0 0l-5.5-5.5M12 17l5.5-5.5"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
