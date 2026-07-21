@@ -1,0 +1,169 @@
+@import "tailwindcss";
+
+/* Yapped design system — Direction 01 · Neon Yap.
+   Hardcoded dark theme: these tokens never invert. */
+:root {
+  --yap-bg: #0a0a0f;
+  --yap-surface: #12121a;
+  --yap-surface-2: #161620;
+  --yap-border: #1f1f29;
+  --yap-border-strong: #2a2a35;
+  --yap-pink: #ff3d8d;
+  --yap-pink-dim: #1a0c12;
+  --yap-pink-border: #3d1526;
+  --yap-lime: #b9ff3d;
+  --yap-cream: #f4f4f0;
+  --yap-text: #ffffff;
+  --yap-text-2: #c9c9d4;
+  --yap-text-3: #8a8a99;
+  --yap-text-4: #5a5a68;
+
+  --yap-radius-pill: 999px;
+  --yap-radius-card: 16px;
+  --yap-radius-nested: 14px;
+  --yap-radius-chip: 9px;
+}
+
+@theme inline {
+  --color-bg: var(--yap-bg);
+  --color-surface: var(--yap-surface);
+  --color-surface-2: var(--yap-surface-2);
+  --color-line: var(--yap-border);
+  --color-line-strong: var(--yap-border-strong);
+  --color-pink: var(--yap-pink);
+  --color-pink-dim: var(--yap-pink-dim);
+  --color-pink-border: var(--yap-pink-border);
+  --color-lime: var(--yap-lime);
+  --color-cream: var(--yap-cream);
+  --color-ink: var(--yap-text);
+  --color-ink-2: var(--yap-text-2);
+  --color-ink-3: var(--yap-text-3);
+  --color-ink-4: var(--yap-text-4);
+  --font-sans: var(--font-grotesk);
+  --radius-card: 16px;
+  --radius-nested: 14px;
+  --radius-chip: 9px;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--yap-bg);
+  color: var(--yap-text);
+  font-family: var(--font-grotesk), system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+::selection {
+  background: var(--yap-pink);
+  color: var(--yap-bg);
+}
+
+.eyebrow {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--yap-pink);
+}
+
+.eyebrow-chip {
+  display: inline-block;
+  background: var(--yap-pink-dim);
+  border: 1px solid var(--yap-pink-border);
+  color: var(--yap-pink);
+  padding: 6px 14px;
+  border-radius: var(--yap-radius-pill);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--yap-pink);
+  color: var(--yap-bg);
+  font-weight: 500;
+  font-size: 15px;
+  padding: 13px 26px;
+  border-radius: var(--yap-radius-pill);
+  transition: transform 0.12s ease, opacity 0.12s ease;
+  cursor: pointer;
+  border: none;
+}
+.btn-primary:hover {
+  transform: translateY(-1px);
+}
+.btn-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: var(--yap-text-2);
+  font-weight: 500;
+  font-size: 15px;
+  padding: 12px 24px;
+  border-radius: var(--yap-radius-pill);
+  border: 1px solid var(--yap-border-strong);
+  cursor: pointer;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.btn-secondary:hover {
+  border-color: var(--yap-text-4);
+  color: var(--yap-text);
+}
+.btn-secondary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.card {
+  background: var(--yap-surface);
+  border: 1px solid var(--yap-border);
+  border-radius: var(--yap-radius-card);
+}
+
+.card-elevated {
+  background: var(--yap-surface-2);
+  border: 1px solid var(--yap-border-strong);
+  border-radius: var(--yap-radius-card);
+}
+
+/* The one allowed gradient: the share card only */
+.share-card-bg {
+  background: linear-gradient(180deg, #161620 0%, #12121a 100%);
+}
+
+.num-badge {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: var(--yap-radius-chip);
+  background: var(--yap-pink-dim);
+  color: var(--yap-pink);
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.display {
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
