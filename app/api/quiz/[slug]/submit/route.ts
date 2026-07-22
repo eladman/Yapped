@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { newId } from "@/lib/ids";
 import { getStore } from "@/lib/store";
+import { track } from "@/lib/track";
 import type { PlayerRecord } from "@/lib/types";
 
 /**
@@ -52,6 +53,12 @@ export async function POST(
     completedAt: new Date().toISOString(),
   };
   await store.createPlayer(player);
+
+  track("player_submitted", {
+    req,
+    quizId: quiz.id,
+    props: { score, total: quiz.questions.length },
+  });
 
   return NextResponse.json({ playerId: player.id, score, total: quiz.questions.length });
 }

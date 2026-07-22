@@ -182,13 +182,22 @@ function supabaseStore(client: SupabaseClient): Store {
 }
 
 let cached: Store | null = null;
+let cachedClient: SupabaseClient | null | undefined;
+
+/** Service-role Supabase client, or null when env vars are missing (dev). */
+export function getSupabaseClient(): SupabaseClient | null {
+  if (cachedClient !== undefined) return cachedClient;
+  const url = process.env.SUPABASE_URL;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  cachedClient = url && key ? createClient(url, key, { auth: { persistSession: false } }) : null;
+  return cachedClient;
+}
 
 export function getStore(): Store {
   if (cached) return cached;
-  const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (url && key) {
-    cached = supabaseStore(createClient(url, key, { auth: { persistSession: false } }));
+  const client = getSupabaseClient();
+  if (client) {
+    cached = supabaseStore(client);
   } else {
     console.warn(
       "[yapped] SUPABASE_URL / SUPABASE_SERVICE_ROLE_KEY not set — using in-memory store (dev only, data lost on restart)"

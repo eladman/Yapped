@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getStore } from "@/lib/store";
+import { track } from "@/lib/track";
 
 /**
  * GET /api/quiz/[slug] — the play payload for invited players.
  * Questions are returned WITHOUT correct answers; scoring happens server-side.
  */
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
@@ -20,6 +21,8 @@ export async function GET(
   }
 
   const players = await store.getPlayers(quiz.id);
+
+  track("quiz_viewed", { req, quizId: quiz.id });
 
   return NextResponse.json({
     title: quiz.title,

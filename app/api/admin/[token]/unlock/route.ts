@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createCheckout } from "@/lib/payments";
 import { getStore } from "@/lib/store";
+import { track } from "@/lib/track";
 
 /**
  * POST /api/admin/[token]/unlock — the "payment" step.
@@ -9,7 +10,7 @@ import { getStore } from "@/lib/store";
  * to the provider webhook.
  */
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ token: string }> }
 ) {
   const { token } = await params;
@@ -27,5 +28,6 @@ export async function POST(
   }
 
   await store.setQuizStatus(quiz.id, "paid");
+  track("quiz_unlocked", { req, quizId: quiz.id, props: { priceAgorot: quiz.priceAgorot } });
   return NextResponse.json({ status: "paid", shareSlug: quiz.shareSlug });
 }
