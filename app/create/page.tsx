@@ -121,12 +121,12 @@ export default function CreatePage() {
       {step === "upload" && (
         <section>
           <span className="eyebrow rise d1">step 1 · upload</span>
-          <h1 className="display rise d2 mt-2 text-[30px]">
-            Drop your chat <span className="romantic text-rose">export</span> here
+          <h1 className="display rise d2 mt-3 text-[30px]">
+            Drop your chat <span className="grad-text">export</span> here
           </h1>
-          <p className="rise d3 mt-3 text-[14px] text-ink-3">
+          <p className="rise d3 mt-3 text-[14px] text-fg-3">
             In WhatsApp: open the chat → ⋮ (or the contact name) → More → Export chat →{" "}
-            <strong className="font-semibold text-ink-2">without media</strong>. Then upload
+            <strong className="font-semibold text-fg-2">without media</strong>. Then upload
             the .txt or .zip.
           </p>
 
@@ -146,15 +146,17 @@ export default function CreatePage() {
               const f = e.dataTransfer.files?.[0];
               if (f) handleFile(f);
             }}
-            className={`rise d4 mt-8 flex cursor-pointer flex-col items-center gap-4 rounded-card border-2 border-dashed px-6 py-14 text-center shadow-[var(--yap-shadow-soft)] transition-colors ${
-              dragOver ? "border-pink bg-pink-soft" : "border-pink-border bg-white/75"
+            className={`rise d4 mt-8 flex cursor-pointer flex-col items-center gap-4 rounded-card border-2 border-dashed px-6 py-14 text-center shadow-[var(--shadow-soft)] transition-colors ${
+              dragOver ? "border-violet bg-violet/5" : "border-line-2 bg-panel"
             }`}
           >
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-pink-soft text-rose">
+            <span className="flex h-14 w-14 items-center justify-center rounded-full border border-line bg-panel-2 text-violet">
               <ArrowDownIcon />
             </span>
             <p className="text-[15px] font-semibold">Tap to choose your export</p>
-            <p className="-mt-2 text-[13px] text-ink-4">.txt or .zip · exported without media</p>
+            <p className="-mt-2 font-mono text-[12px] text-fg-4">
+              .txt or .zip · exported without media
+            </p>
             <input
               ref={fileInput}
               type="file"
@@ -167,8 +169,8 @@ export default function CreatePage() {
             />
           </div>
 
-          <p className="rise d5 mt-5 flex items-start gap-2 text-[13px] text-ink-3">
-            <span className="mt-0.5 text-rose">
+          <p className="rise d5 mt-5 flex items-start gap-2 text-[13px] text-fg-3">
+            <span className="mt-0.5 text-violet">
               <LockIcon />
             </span>
             Your chat is analyzed in your browser. The raw messages never leave your device —
@@ -181,17 +183,17 @@ export default function CreatePage() {
       {step === "confirm" && signals && parsed && (
         <section>
           <span className="eyebrow rise d1">step 2 · who&apos;s this for?</span>
-          <h1 className="display rise d2 mt-2 text-[30px]">
-            Found it. This chat has <span className="romantic text-rose">history</span>.
+          <h1 className="display rise d2 mt-3 text-[30px]">
+            Found it. This chat has <span className="grad-text">history</span>.
           </h1>
 
-          <div className="card-glass rise d3 mt-6 grid grid-cols-2 gap-x-4 gap-y-5 p-6">
+          <div className="card rise d3 mt-6 grid grid-cols-2 gap-x-4 gap-y-5 p-6">
             <Stat label="messages" value={signals.totalMessages.toLocaleString()} />
             <Stat label="people" value={String(signals.participants.length)} />
             <Stat label="time span" value={yearsSpan} />
             <Stat label="active days" value={signals.activeDays.toLocaleString()} />
           </div>
-          <p className="rise d3 mt-3 text-[13px] text-ink-3">
+          <p className="rise d3 mt-3 text-[13px] text-fg-3">
             Between {signals.participants.map((p) => p.name).join(", ")}
           </p>
 
@@ -210,21 +212,12 @@ export default function CreatePage() {
                       {r.emoji}
                     </span>
                     <span className="flex-1">
-                      <span className={`block text-[15px] ${active ? "" : "text-ink"}`}>
-                        {r.label}
-                      </span>
-                      <span className="mt-0.5 block text-[12.5px] font-normal text-ink-4">
+                      <span className="block text-[15px] text-fg">{r.label}</span>
+                      <span className="mt-0.5 block text-[12.5px] font-normal text-fg-4">
                         {r.hint}
                       </span>
                     </span>
-                    <span
-                      className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[12px] transition-colors ${
-                        active
-                          ? "border-pink bg-pink text-white"
-                          : "border-line-strong bg-white text-transparent"
-                      }`}
-                      aria-hidden
-                    >
+                    <span className={`chk ${active ? "chk-on" : "chk-off"}`} aria-hidden>
                       ✓
                     </span>
                   </span>
@@ -241,7 +234,7 @@ export default function CreatePage() {
               different chat
             </button>
           </div>
-          <p className="mt-4 text-center text-[12.5px] text-ink-4">
+          <p className="mt-4 text-center text-[12.5px] text-fg-4">
             Only stats and a few short quotes are sent to write the questions — never the full
             chat. Nothing is kept after generation.
           </p>
@@ -252,11 +245,11 @@ export default function CreatePage() {
       {step === "generating" && (
         <section className="relative flex flex-col items-center py-24 text-center">
           <div className="aura absolute top-10 h-52 w-52" aria-hidden />
-          <span className="eyebrow-chip relative animate-pulse">reading the receipts</span>
+          <span className="badge relative animate-pulse">reading the receipts</span>
           <h1 className="display relative mt-8 text-[30px]">
-            Writing your <span className="romantic text-rose">quiz</span>…
+            Writing your <span className="grad-text">quiz</span>…
           </h1>
-          <p className="relative mt-3 max-w-sm text-[14px] text-ink-3">
+          <p className="relative mt-3 max-w-sm text-[14px] text-fg-3">
             Digging through {signals?.totalMessages.toLocaleString()} messages of history. This
             takes a moment.
           </p>
@@ -266,13 +259,13 @@ export default function CreatePage() {
       {step === "preview" && preview && (
         <section>
           <span className="eyebrow rise d1">step 3 · the tease</span>
-          <h1 className="display rise d2 mt-2 text-[28px]">{preview.title}</h1>
-          <p className="rise d3 mt-3 text-[14px] text-ink-3">
+          <h1 className="display rise d2 mt-3 text-[28px]">{preview.title}</h1>
+          <p className="rise d3 mt-3 text-[14px] text-fg-3">
             {preview.totalQuestions} questions, built from your actual chat. Here&apos;s a
             taste:
           </p>
           {preview.usedFallback && (
-            <p className="rise d3 mt-2 text-[12.5px] text-ink-4">
+            <p className="rise d3 mt-2 font-mono text-[12px] text-fg-4">
               (Generated in stats-only mode — set ANTHROPIC_API_KEY for the full AI-written
               version.)
             </p>
@@ -287,7 +280,7 @@ export default function CreatePage() {
                   {q.options.map((o) => (
                     <div
                       key={o}
-                      className="rounded-chip border border-line bg-bg px-3.5 py-2.5 text-[14px] text-ink-2"
+                      className="rounded-chip border border-line bg-panel-2 px-3.5 py-2.5 text-[14px] text-fg-2"
                     >
                       {o}
                     </div>
@@ -305,7 +298,7 @@ export default function CreatePage() {
                       {["██████", "████"].map((o, j) => (
                         <div
                           key={j}
-                          className="rounded-chip border border-line px-3.5 py-2.5 text-[14px] text-ink-4"
+                          className="rounded-chip border border-line px-3.5 py-2.5 text-[14px] text-fg-4"
                         >
                           {o}
                         </div>
@@ -314,8 +307,8 @@ export default function CreatePage() {
                   </div>
                 ))}
               </div>
-              <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-white/55 px-6 text-center backdrop-blur-[7px]">
-                <span className="flex h-11 w-11 items-center justify-center rounded-full bg-pink-soft text-rose">
+              <div className="veil absolute inset-0 flex flex-col items-center justify-center gap-4 px-6 text-center">
+                <span className="flex h-11 w-11 items-center justify-center rounded-full border border-line bg-panel-2 text-violet">
                   <LockIcon size={16} />
                 </span>
                 <p className="text-[15px] font-semibold">
@@ -326,7 +319,7 @@ export default function CreatePage() {
                   unlock &amp; get the link · ₪{(preview.priceAgorot / 100).toFixed(0)}{" "}
                   <span aria-hidden>→</span>
                 </button>
-                <p className="text-[12.5px] text-ink-3">
+                <p className="text-[12.5px] text-fg-3">
                   one-time. everyone you send it to plays free
                 </p>
               </div>
@@ -339,18 +332,17 @@ export default function CreatePage() {
       {step === "share" && preview && shareSlug && (
         <section className="text-center">
           <div className="rise d1 flex justify-center">
-            <span className="eyebrow-chip">it&apos;s live</span>
+            <span className="badge">it&apos;s live</span>
           </div>
           <h1 className="display rise d2 mt-6 text-[30px]">
-            Send the link.{" "}
-            <span className="romantic text-rose">Let the leaderboard talk.</span>
+            Send the link. <span className="grad-text">Let the leaderboard talk.</span>
           </h1>
 
           <div className="rise d3">
             <ShareLink url={`${origin}/q/${shareSlug}`} />
           </div>
 
-          <p className="rise d4 mt-6 text-[13.5px] text-ink-3">
+          <p className="rise d4 mt-6 text-[13.5px] text-fg-3">
             Everyone plays free — scores roll in as they finish.
           </p>
 
@@ -362,7 +354,7 @@ export default function CreatePage() {
               creator dashboard
             </a>
           </div>
-          <p className="mt-6 text-[12.5px] text-ink-4">
+          <p className="mt-6 text-[12.5px] text-fg-4">
             Bookmark the dashboard link — it&apos;s your private key to watch scores roll in.
           </p>
         </section>
@@ -375,20 +367,22 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <div className="display text-[24px]">{value}</div>
-      <div className="mt-1 text-[11px] uppercase tracking-[0.14em] text-ink-4">{label}</div>
+      <div className="mt-1 font-mono text-[10.5px] uppercase tracking-[0.16em] text-fg-3">
+        {label}
+      </div>
     </div>
   );
 }
 
 function ErrorLine({ text }: { text: string }) {
-  return <p className="mt-4 text-[14px] font-medium text-rose">{text}</p>;
+  return <p className="mt-4 text-[14px] font-medium text-pink">{text}</p>;
 }
 
 function ShareLink({ url }: { url: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="card-glass mx-auto mt-8 flex max-w-md items-center justify-between gap-3 rounded-full p-2 pl-5">
-      <span className="truncate text-[14px] text-ink-2">{url}</span>
+    <div className="card-glass mx-auto mt-8 flex max-w-md items-center justify-between gap-3 !rounded-full p-2 pl-5">
+      <span className="truncate text-[14px] text-fg-2">{url}</span>
       <button
         className="btn-primary shrink-0 !px-5 !py-2.5 !text-[14px]"
         onClick={async () => {

@@ -76,7 +76,7 @@ export default function PlayPage() {
   if (phase === "loading") {
     return (
       <Center>
-        <p className="text-ink-3">loading…</p>
+        <p className="font-mono text-[14px] text-fg-3">loading…</p>
       </Center>
     );
   }
@@ -84,7 +84,7 @@ export default function PlayPage() {
     return (
       <Center>
         <h1 className="display text-[28px]">Quiz not found</h1>
-        <p className="mt-3 text-[14px] text-ink-3">
+        <p className="mt-3 text-[14px] text-fg-3">
           That link doesn&apos;t go anywhere. Double-check it?
         </p>
       </Center>
@@ -93,11 +93,11 @@ export default function PlayPage() {
   if (phase === "locked") {
     return (
       <Center>
-        <span className="eyebrow-chip">not unlocked yet</span>
+        <span className="badge">not unlocked yet</span>
         <h1 className="display mt-6 text-[28px]">
-          This quiz is still <span className="romantic text-rose">cooking</span>
+          This quiz is still <span className="grad-text">cooking</span>
         </h1>
-        <p className="mt-3 max-w-sm text-[14px] text-ink-3">
+        <p className="mt-3 max-w-sm text-[14px] text-fg-3">
           The person who made it hasn&apos;t unlocked the link yet. Nudge them.
         </p>
       </Center>
@@ -111,7 +111,7 @@ export default function PlayPage() {
     return (
       <Center>
         <div className="rise d1">
-          <span className="eyebrow-chip">you&apos;ve been challenged</span>
+          <span className="badge">you&apos;ve been challenged</span>
         </div>
         <h1
           className="display rise d2 mt-6 max-w-md text-[30px]"
@@ -119,12 +119,12 @@ export default function PlayPage() {
         >
           {quiz.title}
         </h1>
-        <p className="rise d3 mt-3 text-[14px] text-ink-3">
+        <p className="rise d3 mt-3 text-[14px] text-fg-3">
           {quiz.questions.length} questions about a chat with{" "}
           {quiz.stats.totalMessages.toLocaleString()} messages. No pressure.
         </p>
         {quiz.finishedPlayers.length > 0 && (
-          <p className="rise d3 mt-2 text-[13px] text-ink-4">
+          <p className="rise d3 mt-2 text-[13px] text-fg-4">
             already played: {quiz.finishedPlayers.map((p) => p.name).join(", ")}
           </p>
         )}
@@ -157,7 +157,7 @@ export default function PlayPage() {
         <span className="eyebrow">
           question {current + 1} of {quiz.questions.length}
         </span>
-        <span className="text-[13px] text-ink-4">{name}</span>
+        <span className="font-mono text-[12px] text-fg-4">{name}</span>
       </div>
       {/* progress */}
       <div className="progress-track mt-3">
@@ -187,9 +187,11 @@ export default function PlayPage() {
       </div>
 
       {phase === "submitting" && (
-        <p className="mt-6 text-center text-[14px] text-ink-3">counting your points…</p>
+        <p className="mt-6 text-center font-mono text-[13px] text-fg-3">
+          counting your points…
+        </p>
       )}
-      {error && <p className="mt-4 text-[14px] font-medium text-rose">{error}</p>}
+      {error && <p className="mt-4 text-[14px] font-medium text-pink">{error}</p>}
     </div>
   );
 }

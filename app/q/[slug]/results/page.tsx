@@ -23,7 +23,9 @@ interface Results {
 
 export default function ResultsPage() {
   return (
-    <Suspense fallback={<p className="py-24 text-center text-ink-3">loading…</p>}>
+    <Suspense
+      fallback={<p className="py-24 text-center font-mono text-[14px] text-fg-3">loading…</p>}
+    >
       <ResultsInner />
     </Suspense>
   );
@@ -57,7 +59,8 @@ function ResultsInner() {
     try {
       const html2canvas = (await import("html2canvas")).default;
       const canvas = await html2canvas(cardRef.current, {
-        backgroundColor: "#faf6f4",
+        // transparent page bg — the card's gradient frame is its own edge
+        backgroundColor: null,
         scale: 3,
         // The clone re-runs entrance animations, capturing everything at
         // opacity 0 — strip them so the card renders in its settled state.
@@ -80,68 +83,70 @@ function ResultsInner() {
     return (
       <div className="mx-auto max-w-md px-5 py-24 text-center">
         <h1 className="display text-[24px]">Hold on</h1>
-        <p className="mt-3 text-[14px] text-ink-3">{error}</p>
+        <p className="mt-3 text-[14px] text-fg-3">{error}</p>
         <Link href={`/q/${slug}`} className="btn-primary mt-6">
           play the quiz <span aria-hidden>→</span>
         </Link>
       </div>
     );
   }
-  if (!data) return <p className="py-24 text-center text-ink-3">tallying the damage…</p>;
+  if (!data)
+    return (
+      <p className="py-24 text-center font-mono text-[14px] text-fg-3">
+        tallying the damage…
+      </p>
+    );
 
   const rtl = data.language === "he";
   const winner = data.leaderboard[0];
 
   return (
     <div className="mx-auto w-full max-w-md px-5 py-10">
-      {/* THE share card — keep everything inside html2canvas-safe:
-          no backdrop-filter, no Tailwind default-palette colors, only token vars/hex. */}
-      <div
-        ref={cardRef}
-        className="share-card-bg rise d1 relative overflow-hidden rounded-[28px] border border-pink-border p-7"
-      >
-        <div
-          aria-hidden
-          className="absolute -right-20 -top-24 h-72 w-72 bg-[radial-gradient(closest-side,rgba(244,178,211,0.5),rgba(244,178,211,0))]"
-        />
-        <div
-          aria-hidden
-          className="absolute -bottom-24 -left-16 h-64 w-64 bg-[radial-gradient(closest-side,rgba(208,192,242,0.42),rgba(208,192,242,0))]"
-        />
+      {/* THE share card — theme-FIXED (identical in light and dark) and
+          html2canvas-safe: only .sc-* classes / literal hex inside. No
+          backdrop-filter, no gradient text, no color-mix/oklch, no masks. */}
+      <div ref={cardRef} className="sc-frame rise d1">
+        <div className="sc-card p-7">
+          <div aria-hidden className="sc-bloom-a" />
+          <div aria-hidden className="sc-bloom-b" />
 
-        <div className="relative">
-          <span className="eyebrow">the verdict</span>
-          <div className="mt-4 flex items-end gap-1.5">
-            <span className="display text-[64px] leading-none">{data.me.score}</span>
-            <span className="display pb-1.5 text-[24px] text-ink-4">/{data.me.total}</span>
-          </div>
-          <p className="romantic mt-3 text-[22px] text-ink-2">{data.me.verdict}</p>
-
-          <div className="mt-6 border-t border-pink-border pt-4">
-            {data.leaderboard.map((p, i) => (
-              <div key={p.id} className="flex items-center justify-between py-1.5">
-                <span className="flex items-center gap-2 text-[14px] text-ink-3">
-                  <span className="w-5 text-ink-4">{i + 1}</span>
-                  {p.name}
-                  {p.id === data.me.id && <span className="text-ink-4">(you)</span>}
-                </span>
-                <span
-                  className={`display text-[18px] ${
-                    p.id === winner?.id ? "text-rose" : "text-ink-2"
-                  }`}
-                >
-                  {p.score}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-5 flex items-center justify-between">
-            <span className="text-[11px] text-ink-4">
-              {data.stats.totalMessages.toLocaleString()} messages of history{" "}
-              {data.stats.topEmojis.join("")}
+          <div className="relative">
+            <span className="sc-eyebrow">
+              <span className="sc-dash" aria-hidden />
+              the verdict
             </span>
-            <span className="romantic text-[12px] text-ink-4">yapped.app</span>
+            <div className="mt-4 flex items-end gap-1.5">
+              <span className="display sc-ink text-[64px] leading-none">{data.me.score}</span>
+              <span className="display sc-faint pb-1.5 text-[24px]">/{data.me.total}</span>
+            </div>
+            <p className="sc-verdict mt-3 text-[19px] font-medium">{data.me.verdict}</p>
+
+            <div className="sc-divider mt-6 pt-4">
+              {data.leaderboard.map((p, i) => (
+                <div key={p.id} className="flex items-center justify-between py-1.5">
+                  <span className="sc-mut flex items-center gap-2 text-[14px]">
+                    <span className="sc-faint w-5 font-mono text-[12px]">{i + 1}</span>
+                    {p.name}
+                    {p.id === data.me.id && <span className="sc-faint">(you)</span>}
+                  </span>
+                  <span
+                    className={`display text-[18px] ${
+                      p.id === winner?.id ? "sc-win" : "sc-sub"
+                    }`}
+                  >
+                    {p.score}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-5 flex items-center justify-between">
+              <span className="sc-faint text-[11px]">
+                {data.stats.totalMessages.toLocaleString()} messages of history{" "}
+                {data.stats.topEmojis.join("")}
+              </span>
+              <span className="sc-faint font-mono text-[11px]">yapped.app</span>
+            </div>
           </div>
         </div>
       </div>
@@ -157,7 +162,7 @@ function ResultsInner() {
 
       {/* waiting-on hint for group play */}
       {data.leaderboard.length === 1 && (
-        <p className="rise d3 mt-5 text-center text-[13.5px] text-ink-3">
+        <p className="rise d3 mt-5 text-center text-[13.5px] text-fg-3">
           You&apos;re first in — send the link around and check back for the leaderboard 👀
         </p>
       )}
@@ -175,7 +180,9 @@ function ResultsInner() {
                 <div className="flex items-start justify-between gap-3" dir="ltr">
                   <span className="eyebrow">q{i + 1}</span>
                   <span
-                    className={`text-[13px] font-medium ${right ? "text-green" : "text-ink-4"}`}
+                    className={`font-mono text-[12px] font-medium ${
+                      right ? "text-ok" : "text-fg-4"
+                    }`}
                   >
                     {right ? "✓ you got it" : "✗ missed it"}
                   </span>
@@ -191,10 +198,10 @@ function ResultsInner() {
                         key={j}
                         className={`flex items-center justify-between rounded-chip border px-3 py-2 text-[14px] ${
                           isCorrect
-                            ? "border-pink-border bg-pink-soft text-rose"
+                            ? "border-violet/40 bg-violet/10 text-violet"
                             : mine
-                              ? "border-line-strong text-ink-2"
-                              : "border-line text-ink-4"
+                              ? "border-line-2 text-fg-2"
+                              : "border-line text-fg-4"
                         }`}
                       >
                         <span>
@@ -202,7 +209,7 @@ function ResultsInner() {
                           {isCorrect && " ✓"}
                         </span>
                         {others.length > 0 && (
-                          <span className="text-[11px] text-ink-4" dir="ltr">
+                          <span className="text-[11px] text-fg-4" dir="ltr">
                             {others.map((a) => a.name).join(", ")}
                           </span>
                         )}
@@ -210,7 +217,7 @@ function ResultsInner() {
                     );
                   })}
                 </div>
-                {q.spice && <p className="mt-3 text-[13px] text-ink-3">{q.spice}</p>}
+                {q.spice && <p className="mt-3 text-[13px] text-fg-3">{q.spice}</p>}
               </div>
             );
           })}

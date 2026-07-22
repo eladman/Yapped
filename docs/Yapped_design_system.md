@@ -1,17 +1,17 @@
 # Yapped — Brand & Design System
 
 **For:** the coding agent building the Yapped web app
-**Direction:** 02 · Soft Yap (romantic iOS)
-**Status:** v2 — supersedes Direction 01 · Neon Yap (dark/pink)
+**Direction:** 03 · Signal (startup-AI, gender-neutral)
+**Status:** v3 — supersedes Direction 02 · Soft Yap (romantic iOS) and Direction 01 · Neon Yap
 **How to use this file:** This is the single source of truth for how Yapped looks, feels, and reads. Follow the tokens exactly. When a decision isn't covered here, default to the principles in §1 rather than inventing a new style.
 
 ---
 
 ## 1. Brand in one breath
 
-Yapped turns a WhatsApp chat into a beautiful, shareable trivia game. The brand is **soft, romantic, iOS-native, and built for the screenshot** — a warm cream canvas washed with pink and lavender, frosted glass cards, ink-black pill buttons, and a serif italic reserved for the emotional beats. The wit lives in the copy; the visuals stay tender.
+Yapped turns a WhatsApp chat into a shareable, AI-written trivia game. The brand is **startup-AI, precise, and gender-neutral** — a cool porcelain canvas (light, the default) or a deep near-black one (dark, behind a user toggle), an electric violet→pink→cyan spectrum used as *the* accent system, geometric display type, and monospace details that signal "a real engine parsed your chat." The wit lives in the copy; the visuals stay technical and premium.
 
-**Personality:** a premium Apple-design-mindset app with a romantic soul. Dreamy, airy, precise. Not childish, not corporate, not neon.
+**Personality:** a confident AI product with a sense of humor. Sharp, atmospheric, never sterile — and never gendered. Pink survives from the old brand as **one note in the spectrum**, never the theme.
 
 **Three non-negotiable principles:**
 1. **Screenshot-first.** The results/share card is the most important surface in the product. Design everything else in service of it.
@@ -20,113 +20,106 @@ Yapped turns a WhatsApp chat into a beautiful, shareable trivia game. The brand 
 
 ---
 
-## 2. Color
+## 2. Color & theming
 
-Committed brand colors. Yapped is a **light-themed product in both light and dark OS modes** — these tokens never invert. Do not wire them to a theme switch (`color-scheme: light` is set on `html`).
+Yapped is **light by default with a dark theme behind a user toggle**. The toggle sets `data-theme="dark"` on `<html>` (persisted in `localStorage["yap-theme"]`; a `?theme=dark|light` URL param also applies + persists — used for QA/demos). All tokens are semantic CSS vars that flip per theme; components never hardcode theme colors — **except the share card, which is theme-fixed (§5)**.
 
-### Core palette
+### Semantic tokens (light → dark)
 
-| Token | Value | Role |
-|---|---|---|
-| `--yap-bg` | `#faf6f4` | Warm cream base background |
-| `--yap-surface` | `#ffffff` | Solid card surface |
-| `--yap-glass` | `rgba(255,255,255,0.62)` | Frosted glass card fill (with backdrop-blur) |
-| `--yap-glass-strong` | `rgba(255,255,255,0.84)` | Stronger glass: chips, secondary buttons |
-| `--yap-border` | `rgba(33,26,38,0.07)` | Default hairline border |
-| `--yap-border-strong` | `rgba(33,26,38,0.14)` | Emphasized border, inputs |
-| `--yap-pink` | `#f2559d` | Brand pink — selected states, the wordmark dot, highlights |
-| `--yap-rose` | `#c73b80` | Deep rose — eyebrows, accent text (AA-safe on cream) |
-| `--yap-pink-soft` | `#fbe3ef` | Pink-tinted fills: selected options, badges |
-| `--yap-pink-border` | `#f4c6dd` | Border for pink-tinted elements |
-| `--yap-lavender` | `#b79df0` | Gradient partner only (progress bar, atmosphere) |
-| `--yap-green` | `#3f8e63` | "You got it" confirmation text only |
-
-### Text (ink scale)
-
-| Token | Value | Role |
-|---|---|---|
-| `--yap-ink` | `#211c26` | Primary text, primary buttons |
-| `--yap-ink-2` | `#5d5566` | Body / secondary |
-| `--yap-ink-3` | `#948b9e` | Muted, captions |
-| `--yap-ink-4` | `#bcb4c5` | Hints, disclaimers, watermark |
+| Token | Light | Dark | Role |
+|---|---|---|---|
+| `--bg` | `#f4f5f8` | `#08080c` | Page background (cool porcelain / near-black — never pure white or `#000`) |
+| `--panel` | `#ffffff` | `#101017` | Card surface |
+| `--panel-2` | `#f7f8fb` | `#14141c` | Nested/secondary surface, option rows |
+| `--glass` / `--glass-2` | white alphas | white alphas (4–7%) | Frosted surfaces (nav, badges, secondary buttons) |
+| `--line` / `--line-2` | ink alphas 9/15% | white alphas 8/14% | Hairline borders |
+| `--fg` … `--fg-4` | `#14151d → #a2a4b4` | `#f3f3f6 → #5b5c69` | 4-step ink scale |
+| `--violet` | `#6d54f0` | `#8b7bff` | Primary accent (links-ish, checks, focus, winner) |
+| `--pink` | `#e5388f` | `#f2559d` | Brand pink — one note of the spectrum, errors/highlights |
+| `--cyan` | `#2f9fe0` | `#52c7ff` | Live/status accent |
+| `--ok` | `#1e9e6a` | `#5fd6a0` | "You got it" confirmation only |
+| `--grad` | violet→pink→cyan `linear-gradient(100deg, …)` | same, brighter stops | THE signature. Gradient keyword, wordmark dot, progress fill, selected borders, badge pips |
+| `--btn-bg` / `--btn-fg` | ink / white | near-white / near-black | Primary CTA pill (always the highest-contrast surface on the page) |
 
 ### The atmosphere
-
-Every screen sits on a fixed gradient wash: radial blooms of pink `rgba(244,186,214,…)`, lavender `rgba(210,196,243,…)`, and peach `rgba(250,214,192,…)` over the cream base, plus two slowly drifting blob layers (`.atmosphere`, `.atmo-blob` in globals.css). Content floats above it on glass and white cards.
+Every screen sits on fixed layers (in `layout.tsx`): an aurora wash (`.bg-base` — violet/cyan/pink radials over `--bg`), a faint engineering grid fading from the top (`.bg-grid`), three slow-drifting color blobs (`.blob-1/2/3`), and a grain overlay (`.grain`). All var-driven, both themes.
 
 ### Rules
-- **Primary CTAs are ink-black pills with white text** (the iOS reference pattern). Pink is never a button fill — it's the accent for selection, eyebrows, and emotional highlights.
-- Rose (`--yap-rose`) for small accent text; pink (`--yap-pink`) for larger/graphic uses. Never body text in pink.
-- Soft diffuse shadows (`--yap-shadow-soft/float`) are the depth system — warm-tinted, never gray/harsh.
-- Gradients are allowed only as: the atmosphere, the progress bar fill, and the share-card wash. Buttons and cards stay flat.
+- **Primary CTAs are `--btn-bg` pills** (ink in light, white in dark). The gradient is never a button fill.
+- The gradient is reserved for: the accent word in a heading (`.grad-text`), the wordmark dot, progress fill, selected-state borders, badge/eyebrow pips, the pricing-card frame, and the share-card frame. Don't spray it.
+- `--pink` alone is for errors and small highlights; `--violet` is the workhorse accent; `--cyan` marks "live" status. Never body text in an accent color.
+- No `--ok` green outside the "you got it" confirmation.
+- **`.grad-text` (background-clip: text) is banned inside the share card** (html2canvas can't render it).
 
 ---
 
 ## 3. Typography
 
-**Two voices: iOS sans for everything, serif italic for the emotional word.**
+**Three voices — geometric display, humanist body, monospace signal:**
 
-- **UI sans:** the system SF stack — `-apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif`. Real SF on iPhone (the primary device), native feel everywhere. Zero font payload.
-- **Romantic accent:** **Instrument Serif** (Google Fonts, weight 400 + italic), loaded via `next/font` as `--font-romantic`. Used through the `.romantic` class.
+- **Display:** **Space Grotesk** (`--font-grotesk`, via `next/font`) through the `.display` class — weight 600, tracking `-0.028em`. Headlines, scores, stat numbers, quiz questions.
+- **Body/UI:** **Inter** (`--font-inter`) — the default body font. Hebrew content falls back to the system stack (declared in the font-family chain).
+- **Signal:** **JetBrains Mono** (`--font-jbmono`, Tailwind `font-mono`) — eyebrows, badges, stats labels, timestamps, disclaimers, the terminal, "live" chrome. The mono details are what make it feel like an AI product.
 
-| Use | Style | Size (mobile) | Notes |
-|---|---|---|---|
-| Hero headline | sans 700, `.display` | 40px | tracking `-0.035em`, leading ~1.06 |
-| Section heading | sans 700, `.display` | 26px | |
-| Quiz question | sans 700, `.display` | 25px | big and confident — the question is the fun |
-| Emotional accent | `.romantic` (serif italic) | inherits (1.08em) | one word or phrase per heading, usually in `text-rose` |
-| Body | sans 400 | 14–16px | 16px minimum on inputs (blocks iOS focus-zoom) |
-| Eyebrow | sans 600 | 11px | UPPERCASE, tracking `0.14em`, rose |
-| Caption / footer | sans 400 | 11–13px | ink-3 / ink-4 |
+| Use | Style | Size (mobile) |
+|---|---|---|
+| Hero headline | `.display` | 42px (64px desktop) |
+| Section heading | `.display` | 30px (38px desktop) |
+| Quiz question | `.display` | 25px |
+| Accent word in a heading | `.grad-text` inside the `.display` | inherits |
+| Body | Inter 400 | 14–16px (16px minimum on inputs) |
+| Eyebrow | `.eyebrow` — mono 500, 11px, UPPERCASE, tracking 0.22em, `--fg-3`, gradient dash `::before` | 11px |
+| Badge | `.badge` — glass pill, mono uppercase, gradient pip | 11px |
+| Caption / meta | mono 400 | 10.5–12.5px |
 
 ### Rules
-- **Wordmark:** lowercase `yapped` in **Instrument Serif italic** with an upright **pink** period. The serif italic wordmark is the brand's romantic signature. Never title-case or all-caps.
-- The serif italic is a spice: **at most one romantic phrase per screen section.** It marks emotion (the verdict line, "really", "group therapy"), never UI chrome.
-- Eyebrow labels (small uppercase rose lines) introduce sections and cards — a signature element.
-- Sentence case for all UI copy and buttons. UPPERCASE is reserved for eyebrows.
+- **Wordmark:** lowercase `yapped` in **Space Grotesk 600** with a **gradient dot** (`.wordmark` + `.wordmark-dot`). Never title-case or all-caps, never the old serif.
+- **No serif anywhere.** The emotional device is now the gradient keyword: **at most one `.grad-text` phrase per screen section.**
+- Eyebrows (mono uppercase with the gradient dash) introduce sections and cards — a signature element.
+- Sentence case for all UI copy and buttons. UPPERCASE is reserved for eyebrows/badges (mono only).
 
 ---
 
 ## 4. Layout & shape
 
-- **Phone canvas.** All content lives in a centered `max-w-md` column — the app is designed for the phone screen first; on desktop it reads as an intentional narrow canvas over the atmosphere.
-- **Corner radius:** `999px` pills for buttons/chips/header, `28px` cards, `20px` nested, `18px` options/inputs, `14px` small chips.
-- **Buttons are pills.** Primary = ink fill, white text, weight 600, `padding 14px 28px`, spring press (`scale(0.96)` on `:active`). Secondary = frosted glass pill with hairline border.
-- **Exactly one primary (ink) CTA per screen state.**
-- **Header:** a floating frosted-glass pill, sticky at the top — wordmark left, mini ink CTA right.
-- **Cards:** white or frosted glass with hairline borders + soft warm shadows. iOS grouped-list pattern (rows with hairline dividers inside one card) for step lists and leaderboards.
-- **Motion:** staggered load-in reveals (`.rise .d1–.d5` — fade + 14px rise, ~0.7s spring ease), drifting atmosphere blobs, pulsing `.aura` for the generating state, spring press on all buttons. All gated behind `prefers-reduced-motion`.
+- **Marketing surfaces (home) are wide** — `max-w-5xl` sections. **Flow surfaces (create, play, results, admin) stay a focused `max-w-md` column.**
+- **Corner radius:** `999px` pills, `28px` hero/pricing frames (`--radius-lg`), `22px` cards (`--radius-card`), `16px` inputs (`--radius-nested`), `14px` option rows/chips (`--radius-chip`).
+- **Buttons are pills.** Primary = `--btn-bg` fill, weight 600, spring press (`scale(0.96)` on `:active`), violet glow on hover. Secondary = frosted glass pill with `--line-2` hairline. **Exactly one primary CTA per screen state.**
+- **Header:** floating frosted pill (`.nav-pill`), sticky — wordmark left, anchor links center (desktop), **theme toggle + mini primary CTA** right.
+- **Cards:** `--panel` with hairline `--line` + soft shadow (`.card`); glass variant `.card-glass`. Selected/answer rows use the **gradient-border trick** (`.answer-option.selected`): two-layer background, `border: 1px solid transparent`.
+- **Motion:** staggered `.rise .d1–.d5` load-ins, drifting blobs, pulsing `.aura` while generating, blinking `.term-cursor`, spring press everywhere. All gated behind `prefers-reduced-motion`.
 
 ---
 
 ## 5. Signature components
 
 ### The share / results card (most important surface)
-- Container: `.share-card-bg` (cream→lilac→peach linear gradient), `28px` radius, `1px solid var(--yap-pink-border)`, `overflow-hidden`.
-- Two alpha-fading radial blooms (pink top-right, lavender bottom-left) — **alpha gradients only, they must blend over the card gradient.**
-- Eyebrow in rose (`THE VERDICT`), giant sans-700 score (the `/10` in ink-4), verdict line in **serif italic** (`.romantic`, ink-2).
-- Hairline divider (`--yap-pink-border`), then leaderboard rows: name ink-3, score `.display` (winner in rose).
-- Bottom-right watermark: `yapped.app` in Instrument Serif italic, ink-4, ~12px. **Every share card carries it** — it's the growth loop.
-- **html2canvas constraints (binding):** inside the card use ONLY token vars / hex / rgba — no Tailwind default-palette colors (oklch), no slash-opacity utilities (color-mix), no `backdrop-filter`, no `mask-image`. The download handler strips `.rise` animation classes in `onclone` (cloned documents restart entrance animations and would capture at opacity 0).
+- Structure: `.sc-frame` (violet→pink→cyan gradient, radius 24, padding 2px) wrapping `.sc-card` (white, radius 22) — the gradient ring **is** the brand frame.
+- Inside: `.sc-eyebrow` (mono `THE VERDICT` with gradient dash), giant `.display` score (`/10` in `.sc-faint`), verdict line in `.sc-verdict` rose `#c73b80`, hairline `.sc-divider`, leaderboard rows (rank mono, winner in `.sc-win` violet), footer meta + **`yapped.app` watermark in mono** — every card carries it; it's the growth loop.
+- **The card is theme-FIXED:** identical in light and dark (it's a brand artifact, and captures must be deterministic). Only `.sc-*` classes with literal hex inside.
+- **html2canvas constraints (binding):** inside the card use ONLY literal hex/rgba + plain linear/radial gradients — no theme vars that flip, no Tailwind default-palette colors (oklch), no slash-opacity utilities (color-mix), no `backdrop-filter`, no `mask-image`, **no `.grad-text`/background-clip:text**. Download uses `backgroundColor: null` and strips `.rise/.d1–.d5` in `onclone` (cloned documents restart entrance animations and would capture at opacity 0).
 
-### Number badges (how-it-works steps)
-`34px` circle, `--yap-pink-soft` background, rose number at weight 700.
+### The terminal (`.terminal`)
+A dark code surface **in both themes** (`#0d0e15`, fixed) — bar with dots + mono title, body log with colored spans (`.tk` cyan, `.tp` violet, `.tpink` pink, `.tok` green, `.tl` gray) and a gradient `.term-cursor`. The "an engine actually ran" proof on the home page.
 
-### Eyebrow chip
-Frosted glass pill (`--yap-glass-strong`, white hairline, soft shadow, backdrop-blur) with a 6px pink dot before rose uppercase text — the "• Pinned" pattern.
+### Badge (`.badge`) & eyebrow (`.eyebrow`)
+Glass pill with glowing gradient pip / mono uppercase line with gradient dash. These two carry most of the brand outside the hero.
 
-### Answer option
-`.answer-option` — white rounded-18 row with soft shadow; selected = pink-soft fill, pink border, rose text, weight 600. Used for quiz options and the vibe picker (vibe rows add emoji + a pink check circle).
-**Gotcha:** `.answer-option` is unlayered CSS (`display: block`) and beats Tailwind layout utilities on the same element — put flex layouts on an inner `<span>`, not on the option itself.
+### Answer option (`.answer-option`)
+`--panel-2` rounded-14 row; selected = gradient border + `--fg` text + faint violet glow. Used for quiz options and the vibe picker (with `.chk-on/.chk-off` check circles).
+**Gotcha:** `.answer-option` is unlayered CSS (`display: block`) and beats Tailwind layout utilities on the same element — put flex layouts on an inner `<span>`.
 
 ### Progress bar
-6px pill track (`rgba(33,26,38,0.08)`), fill `linear-gradient(90deg, --yap-pink, --yap-lavender)`.
+6px pill track, fill = `--grad`.
+
+### Theme toggle (`.theme-toggle`)
+Glass circle button; sun/moon icons swapped **by CSS** on `html[data-theme]` (no React state → no hydration mismatch). The no-flash script in `layout.tsx` runs as the first body child.
 
 ---
 
 ## 6. Voice & copy
 
-Warm, sly, internet-native. Short. The wit stays; the aggression is gone — no "savage", no "weaponized". The roast lives inside the quiz content (scaled by relationship type), while UI chrome stays charming.
+Warm, sly, internet-native. Short. Confident-technical, never corporate. The roast lives inside the quiz content (scaled by relationship type), while UI chrome stays charming.
 
 **Tone shifts by relationship type:**
 - **Romantic partner** → warm-teasing, a touch nostalgic
@@ -134,10 +127,11 @@ Warm, sly, internet-native. Short. The wit stays; the aggression is gone — no 
 - **Family** → light and warm, dial the roast way down
 
 **Do:**
-- "How well do they *really* know your chat?"
+- "How well do they *really* know the group chat?"
 - "Send the link. Let the leaderboard talk."
-- "Some chats deserve a trophy."
-- Emoji sparingly, as punctuation for a joke (👀 💗 💀), never decoratively everywhere.
+- "Some chats deserve a leaderboard."
+- Mono microcopy for system states ("runs on-device · we never store your chats").
+- Emoji sparingly, as punctuation for a joke (👀 💀), never decoratively everywhere.
 
 **Don't:**
 - Corporate filler ("seamless", "unlock your potential", "empower").
@@ -154,47 +148,30 @@ Warm, sly, internet-native. Short. The wit stays; the aggression is gone — no 
 3. **Footer disclaimer:** "Not affiliated with WhatsApp or Meta." Always present.
 4. **No WhatsApp green anywhere**, no WhatsApp logo/checkmark imagery — even decoratively.
 5. **Minimize what's sent to the AI** — signals and short quotes, never the full chat.
-6. **Payment pattern:** tease the quiz, paywall the share link. Creator pays once; players always play free.
+6. **Payment pattern:** tease the quiz, paywall the share link (₪19 one-time). Creator pays once; players always play free.
 7. **Inputs are ≥16px font-size** (prevents iOS focus-zoom). RTL: quiz titles/questions/options set `dir` from quiz language.
+8. **Light is the default theme.** Dark is user-opt-in only — never auto-switch from OS preference.
 
 ---
 
 ## 8. Quick token reference (drop-in)
 
-See `app/globals.css` for the canonical implementation (tokens + `@theme inline` Tailwind mapping + component classes).
-
-```css
-:root {
-  --yap-bg: #faf6f4;
-  --yap-surface: #ffffff;
-  --yap-glass: rgba(255, 255, 255, 0.62);
-  --yap-glass-strong: rgba(255, 255, 255, 0.84);
-  --yap-border: rgba(33, 26, 38, 0.07);
-  --yap-border-strong: rgba(33, 26, 38, 0.14);
-  --yap-ink: #211c26;
-  --yap-ink-2: #5d5566;
-  --yap-ink-3: #948b9e;
-  --yap-ink-4: #bcb4c5;
-  --yap-pink: #f2559d;
-  --yap-rose: #c73b80;
-  --yap-pink-soft: #fbe3ef;
-  --yap-pink-border: #f4c6dd;
-  --yap-lavender: #b79df0;
-  --yap-green: #3f8e63;
-  --yap-radius-card: 28px;
-  --yap-radius-nested: 20px;
-  --yap-radius-chip: 14px;
-  --yap-radius-pill: 999px;
-}
-```
+See `app/globals.css` for the canonical implementation (light `:root` + `html[data-theme="dark"]` overrides + `@theme inline` Tailwind mapping + component classes).
 
 ```
-Fonts:
-  UI:      system SF stack (-apple-system … sans-serif), weights 400/600/700
-  Accent:  Instrument Serif 400 italic (next/font, --font-romantic) via .romantic
-Assets:
-  /hero-bloom.jpg — dreamy blurred orchid (landing hero backdrop only;
-  the share card uses pure alpha gradients so html2canvas renders it faithfully)
+Fonts (next/font, layout.tsx):
+  Display:  Space Grotesk  → --font-grotesk  (.display, .wordmark)
+  Body:     Inter          → --font-inter    (default)
+  Signal:   JetBrains Mono → --font-jbmono   (font-mono, .eyebrow, .badge, terminal)
+
+Tailwind color utilities (from @theme inline):
+  bg / panel / panel-2 / line / line-2 / fg / fg-2 / fg-3 / fg-4
+  violet / pink / cyan / ok
+
+Radii: pill 999 · lg 28 · card 22 · nested 16 · chip 14
+
+Theme switch: html[data-theme="dark"] ← ThemeToggle (components/theme-toggle.tsx)
+  persisted: localStorage["yap-theme"] · QA param: ?theme=dark|light
 ```
 
 ---
@@ -203,11 +180,11 @@ Assets:
 
 | On brand | Off brand |
 |---|---|
-| Warm cream + pink-lavender atmosphere | Dark theme, neon accents, pure white `#fff` page bg |
-| Ink pill CTAs, white text | Pink/gradient button fills |
-| Serif italic for one emotional phrase | Serif everywhere, or none at all |
-| Frosted glass + hairline + soft warm shadow | Hard gray shadows, heavy borders |
-| lowercase serif-italic `yapped.` with pink dot | `Yapped` / `YAPPED`, sans wordmark |
-| Witty-warm copy ("let the leaderboard talk") | "Savage/weaponized" aggression or corporate polish |
-| Watermarked share card, html2canvas-safe | Share card with blur/oklch/animations that break the download |
-| Pink `#f2559d` / rose `#c73b80` accents | Any green that isn't the tiny "got it" check; WhatsApp visual language |
+| Cool porcelain light / near-black dark, aurora + grid + grain | Warm cream, pure white `#fff` or pure black `#000` page bg |
+| `--btn-bg` pill CTAs (ink↔white per theme) | Gradient or pink button fills |
+| One `.grad-text` word per section heading | Serif italic anywhere; gradient text sprayed everywhere |
+| Mono eyebrows/badges/meta with gradient pips | Sans-serif UPPERCASE labels; decorative emoji chrome |
+| Panels with hairlines + soft shadows; gradient borders for selection | Hard gray shadows, heavy borders, neon glows on everything |
+| lowercase Space-Grotesk `yapped` + gradient dot | `Yapped` / `YAPPED`, serif wordmark, plain pink dot |
+| Theme-fixed, watermarked, html2canvas-safe share card | Share card that flips with the theme or uses blur/oklch/gradient-text |
+| Violet as workhorse accent; pink as one note; cyan for live | Pink-dominant anything; any green that isn't the tiny "got it" check; WhatsApp visual language |
