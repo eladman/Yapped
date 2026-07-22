@@ -29,6 +29,8 @@ export default function CreatePage() {
   const [relationship, setRelationship] = useState<Relationship | null>(null);
   const [parsed, setParsed] = useState<ParseResult | null>(null);
   const [signals, setSignals] = useState<ChatSignals | null>(null);
+  /** edited display names, keyed by the original detected name */
+  const [names, setNames] = useState<Record<string, string>>({});
   const [preview, setPreview] = useState<PreviewData | null>(null);
   const [shareSlug, setShareSlug] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -49,8 +51,11 @@ export default function CreatePage() {
         );
         return;
       }
+      const sig = extractSignals(result.messages);
       setParsed(result);
-      setSignals(extractSignals(result.messages));
+      setSignals(sig);
+      // seed the name editor with each detected participant's name
+      setNames(Object.fromEntries(sig.participants.map((p) => [p.name, p.name])));
       setStep("confirm");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't read that file");
@@ -63,10 +68,18 @@ export default function CreatePage() {
     setError(null);
     setStep("generating");
     try {
+      // apply the user's name edits everywhere a name appears in the signals,
+      // so the quiz refers to each person the way the creator wants.
+      const displayName = (orig: string) => names[orig]?.trim() || orig;
+      const renamed: ChatSignals = {
+        ...signals,
+        participants: signals.participants.map((p) => ({ ...p, name: displayName(p.name) })),
+        snippets: signals.snippets.map((s) => ({ ...s, sender: displayName(s.sender) })),
+      };
       const res = await fetch("/api/quiz", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ signals, relationship }),
+        body: JSON.stringify({ signals: renamed, relationship }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Generation failed");
@@ -84,7 +97,7 @@ export default function CreatePage() {
     } finally {
       setBusy(false);
     }
-  }, [signals, relationship]);
+  }, [signals, relationship, names]);
 
   const unlock = useCallback(async () => {
     if (!preview) return;
@@ -193,9 +206,35 @@ export default function CreatePage() {
             <Stat label="time span" value={yearsSpan} />
             <Stat label="active days" value={signals.activeDays.toLocaleString()} />
           </div>
-          <p className="rise d3 mt-3 text-[13px] text-fg-3">
-            Between {signals.participants.map((p) => p.name).join(", ")}
+          <h2 className="rise d3 mt-8 text-[15px] font-semibold">Name the players</h2>
+          <p className="rise d3 mt-1 text-[13px] text-fg-3">
+            These names show up throughout the quiz. Change them to whatever the players will
+            recognize.
           </p>
+          <div className="rise d3 mt-3 flex flex-col gap-3">
+            {signals.participants.map((p) => (
+              <div key={p.name}>
+                <div className="mb-1.5 flex items-baseline justify-between gap-2">
+                  <span className="truncate font-mono text-[11px] uppercase tracking-[0.14em] text-fg-4">
+                    detected · {p.name}
+                  </span>
+                  <span className="shrink-0 font-mono text-[11px] text-fg-4">
+                    {p.messageCount.toLocaleString()} msgs
+                  </span>
+                </div>
+                <input
+                  className="field"
+                  value={names[p.name] ?? p.name}
+                  placeholder={p.name}
+                  maxLength={40}
+                  onChange={(e) =>
+                    setNames((prev) => ({ ...prev, [p.name]: e.target.value }))
+                  }
+                  aria-label={`Name for ${p.name}`}
+                />
+              </div>
+            ))}
+          </div>
 
           <h2 className="rise d4 mt-8 text-[15px] font-semibold">Pick the vibe</h2>
           <div className="rise d4 mt-3 flex flex-col gap-2.5">
